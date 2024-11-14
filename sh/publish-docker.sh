@@ -13,9 +13,6 @@ REPOSITORY="alphaxbdx/chaussonm2-services"
 DOCKERFILE="Docker/Dockerfile"
 echo $PARENT_DIR
 
-# Log in to Docker
-#echo "$DOCKER_TOKEN" | docker login --username "$DOCKER_USERNAME" --password-stdin
-
 # Build for multiple platforms
 PLATFORMS="linux/amd64"
 
