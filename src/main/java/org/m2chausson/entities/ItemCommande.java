@@ -19,8 +19,6 @@ public class ItemCommande {
 
     @Column(name = "Qte", nullable = false)
     private int quantity;
-
-
     
     public ItemCommande() {}
 
