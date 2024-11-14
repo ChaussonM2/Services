@@ -35,11 +35,11 @@ docker exec -i bdd psql -U postgres-isi -d chausson < path/to/backup.sql
 
 **Create a client :**
 ```bash
-curl -X POST http://localhost:8080/webhook -H "Content-Type: application/json" -d '{"type":"client","name":"Andry Giorgio FARRUGIA"}'
+curl -X POST http://localhost:8086/webhook -H "Content-Type: application/json" -d '{"type":"client","name":"Andry Giorgio FARRUGIA"}'
 ```
 
 
 **Create a product :**
 ```bash
-curl -X POST http://localhost:8080/webhook -H "Content-Type: application/json" -d '{"type":"produit","name":"Béton","prix":62.5,"typeProduit":"BTP"}'
+curl -X POST http://localhost:8086/webhook -H "Content-Type: application/json" -d '{"type":"produit","name":"Béton","prix":62.5,"typeProduit":"BTP"}'
 ```
