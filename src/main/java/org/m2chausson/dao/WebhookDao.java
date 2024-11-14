@@ -17,7 +17,7 @@ public class WebhookDao {
 
     // Méthodes pour les entités Produit
     public void creerProduit(Produit produit) {
-        executeTransaction(em -> em.persist(produit));
+        executeTransaction(em -> em.merge(produit));
     }
 
     public void majProduit(Produit produit) {
@@ -35,7 +35,7 @@ public class WebhookDao {
 
     // Méthodes pour les entités Client
     public void creerClient(Client client) {
-        executeTransaction(em -> em.persist(client));
+        executeTransaction(em -> em.merge(client));
     }
 
     public void majClient(Client client) {

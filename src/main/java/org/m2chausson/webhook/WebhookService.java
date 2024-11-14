@@ -13,12 +13,14 @@ public class WebhookService {
     }
 
     public enum Notification {
-        //Appel pour les méthodes Produits
+        // Appel pour les méthodes Produits
         PRODUIT_UPDATE {
             @Override
-            public void executeAction(WebhookDao webhookDao, Object message) {
+            public String executeAction(WebhookDao webhookDao, Object message) {
                 if (message instanceof Produit) {
-                    webhookDao.majProduit((Produit) message);
+                    Produit produit = (Produit) message;
+                    webhookDao.majProduit(produit);
+                    return "Produit mis à jour avec succès : " + produit.getNom() + " (ID: " + produit.getId() + ")\n";
                 } else {
                     throw new IllegalArgumentException("Le message doit être un Produit pour PRODUIT_UPDATE");
                 }
@@ -26,9 +28,11 @@ public class WebhookService {
         },
         PRODUIT_CREATE {
             @Override
-            public void executeAction(WebhookDao webhookDao, Object message) {
+            public String executeAction(WebhookDao webhookDao, Object message) {
                 if (message instanceof Produit) {
-                    webhookDao.creerProduit((Produit) message);
+                    Produit produit = (Produit) message;
+                    webhookDao.creerProduit(produit);
+                    return "Produit créé avec succès : " + produit.getNom() + " (ID: " + produit.getId() + ")\n";
                 } else {
                     throw new IllegalArgumentException("Le message doit être un Produit pour PRODUIT_CREATE");
                 }
@@ -36,9 +40,11 @@ public class WebhookService {
         },
         PRODUIT_DELETE {
             @Override
-            public void executeAction(WebhookDao webhookDao, Object message) {
+            public String executeAction(WebhookDao webhookDao, Object message) {
                 if (message instanceof Produit) {
-                    webhookDao.supprimerProduit((Produit) message);
+                    Produit produit = (Produit) message;
+                    webhookDao.supprimerProduit(produit);
+                    return "Produit supprimé avec succès : " + produit.getNom() + " (ID: " + produit.getId() + ")\n";
                 } else {
                     throw new IllegalArgumentException("Le message doit être un Produit pour PRODUIT_DELETE");
                 }
@@ -48,9 +54,11 @@ public class WebhookService {
         // Appel pour les méthodes Clients
         CLIENT_UPDATE {
             @Override
-            public void executeAction(WebhookDao webhookDao, Object message) {
+            public String executeAction(WebhookDao webhookDao, Object message) {
                 if (message instanceof Client) {
-                    webhookDao.majClient((Client) message);
+                    Client client = (Client) message;
+                    webhookDao.majClient(client);
+                    return "Client mis à jour avec succès : " + client.getNom() + " (ID: " + client.getId() + ")\n";
                 } else {
                     throw new IllegalArgumentException("Le message doit être un Client pour CLIENT_UPDATE");
                 }
@@ -58,9 +66,11 @@ public class WebhookService {
         },
         CLIENT_CREATE {
             @Override
-            public void executeAction(WebhookDao webhookDao, Object message) {
+            public String executeAction(WebhookDao webhookDao, Object message) {
                 if (message instanceof Client) {
-                    webhookDao.creerClient((Client) message);
+                    Client client = (Client) message;
+                    webhookDao.creerClient(client);
+                    return "Client créé avec succès : " + client.getNom() + " (ID: " + client.getId() + ")\n";
                 } else {
                     throw new IllegalArgumentException("Le message doit être un Client pour CLIENT_CREATE");
                 }
@@ -68,23 +78,26 @@ public class WebhookService {
         },
         CLIENT_DELETE {
             @Override
-            public void executeAction(WebhookDao webhookDao, Object message) {
+            public String executeAction(WebhookDao webhookDao, Object message) {
                 if (message instanceof Client) {
-                    webhookDao.supprimerClient((Client) message);
+                    Client client = (Client) message;
+                    webhookDao.supprimerClient(client);
+                    return "Client supprimé avec succès : " + client.getNom() + " (ID: " + client.getId() + ")\n";
                 } else {
                     throw new IllegalArgumentException("Le message doit être un Client pour CLIENT_DELETE");
                 }
             }
         };
-        public abstract void executeAction(WebhookDao webhookDao, Object message);
+        public abstract String executeAction(WebhookDao webhookDao, Object message);
     }
 
+    // Méthode pour envoyer un message avec la notification
     public String sendMessage(Notification notificationType, Object message) {
         try {
-            notificationType.executeAction(webhookDao, message);
-            return "Action exécutée avec succès pour " + notificationType.name();
+            String responseMessage = notificationType.executeAction(webhookDao, message);
+            return responseMessage;
         } catch (Exception e) {
-            return "Erreur lors de l'exécution de l'action pour " + notificationType.name() + " : " + e.getMessage();
+            return "Erreur lors de l'exécution de l'action pour " + notificationType.name() + " : " + e.getMessage() + "\n";
         }
     }
 }
