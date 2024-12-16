@@ -9,95 +9,89 @@ public class ItemCommandeDao {
 
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("PersistenceM2Chausson");
 
-    public ItemCommandeDao(EntityManagerFactory entityManagerFactory) {}
+    private final EntityManager em;
+
+    public ItemCommandeDao() {
+        this.em = entityManagerFactory.createEntityManager();
+    }
 
     // Récupérer tous les ItemCommandes
     public List<ItemCommande> getAllItemCommandes() throws Exception {
-        EntityManager entityManager = null;
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            return entityManager.createQuery("SELECT p FROM ItemCommande p", ItemCommande.class).getResultList();
+            return em.createQuery("SELECT p FROM ItemCommande p", ItemCommande.class).getResultList();
         } catch (Exception e) {
             throw new Exception("Erreur lors de la récupérations des ItemCommandes", e);
         } finally {
-            if (entityManager != null) {
-                entityManager.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     // Récupérer un ItemCommande par ID
     public ItemCommande getItemCommandeById(int id) throws Exception {
-        EntityManager entityManager = null;
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            return entityManager.find(ItemCommande.class, id);
+            return em.find(ItemCommande.class, id);
         } catch (Exception e) {
             throw new Exception("Erreur lors de la récupération d'un ItemCommande par ID", e);
         } finally {
-            if (entityManager != null) {
-                entityManager.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     // Créer un nouveau ItemCommande
     public void createItemCommande(ItemCommande ItemCommande) throws Exception {
-        EntityManager entityManager = null;
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            entityManager.persist(ItemCommande);
-            entityManager.getTransaction().commit();
+            em.getTransaction().begin();
+            em.persist(ItemCommande);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (entityManager != null && entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
+            if (em != null && em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
             throw new Exception("Erreur lors de la création d'un ItemCommande", e);
         } finally {
-            if (entityManager != null) {
-                entityManager.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     // Mettre à jour un enregistrement de ItemCommande existant
     public void updateItemCommande(ItemCommande ItemCommande) throws Exception {
-        EntityManager entityManager = null;
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            entityManager.merge(ItemCommande);
-            entityManager.getTransaction().commit();
+            em.getTransaction().begin();
+            em.merge(ItemCommande);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (entityManager != null && entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
+            if (em != null && em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
             throw new Exception("Error while updating ItemCommande", e);
         } finally {
-            if (entityManager != null) {
-                entityManager.close();
+            if (em != null) {
+                em.close();
             }
         }
     }
 
     // Supprimer un enregistrement de ItemCommande
     public void deleteItemCommande(ItemCommande ItemCommande) throws Exception {
-        EntityManager entityManager = null;
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            ItemCommande = entityManager.merge(ItemCommande);
-            entityManager.remove(ItemCommande);
-            entityManager.getTransaction().commit();
+            em.getTransaction().begin();
+            ItemCommande = em.merge(ItemCommande);
+            em.remove(ItemCommande);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (entityManager != null && entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
+            if (em != null && em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
             throw new Exception("Error while deleting ItemCommande", e);
         } finally {
-            if (entityManager != null) {
-                entityManager.close();
+            if (em != null) {
+                em.close();
             }
         }
     }

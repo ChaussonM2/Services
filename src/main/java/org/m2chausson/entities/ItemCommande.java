@@ -10,11 +10,8 @@ public class ItemCommande {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany( targetEntity=Commande.class, mappedBy="Commande" )
-    @Column(name = "id_commande", nullable = false)
-    private int id_commande;
-
-    @Column(name = "produit", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_produit")
     private Produit produit;
 
     @Column(name = "Qte", nullable = false)
@@ -22,9 +19,7 @@ public class ItemCommande {
     
     public ItemCommande() {}
 
-    public ItemCommande(int id, int id_commande, Produit produit, int quantity) {
-        this.id = id;
-        this.id_commande = id_commande;
+    public ItemCommande(int id_commande, Produit produit, int quantity) {
         this.produit=produit;
         this.quantity = quantity;
     }
@@ -35,14 +30,6 @@ public class ItemCommande {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getIdCommande() {
-        return id;
-    }
-
-    public void setIdCommande(int id_commande) {
-        this.id_commande = id_commande;
     }
 
     public Produit getProduit() {
@@ -64,7 +51,7 @@ public class ItemCommande {
 
     @Override
     public String toString() {
-        return "ItemCommande [id=" + id + ", Produit=" + produit + ", quantity=" + quantity + ", idCommande = " + id_commande +"]";
+        return "ItemCommande [id=" + id + ", Produit=" + produit.getNom() + ", quantity=" + quantity +"]";
     }
 }
 

@@ -1,37 +1,39 @@
 package org.m2chausson.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "commande")
-public class Commande {
+public class Commande implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_commande;
+    private int id;
 
-    @Column(name = "id_client", nullable = false)
-    private int id_client;
+    @ManyToOne
+    @JoinColumn(name = "id_client")
+    private Client client;
 
-    @Column(name = "itemCommande", nullable = false)
+    @OneToMany
+    @JoinColumn(name = "id_itemCommande")
     private List<ItemCommande> itemCommande;
     
     public Commande() {}
 
-    public Commande(int id_commande, List<ItemCommande> itemCommande, int id_client) {
-        this.id_commande = id_commande;
+    public Commande(List<ItemCommande> itemCommande, Client client) {
         this.itemCommande=itemCommande;
-        this.id_client = id_client;
+        this.client = client;
     }
 
-    public int getClientId() {
-        return id_client;
+    public Client getClient() {
+        return this.client;
     }
 
-    public void setClientId(int ClientId) {
-        this.id_client = ClientId;
+    public void setClientId(Client client) {
+        this.client = client;
     }
 
     public List<ItemCommande> getitemCommande() {
@@ -43,16 +45,16 @@ public class Commande {
     }
 
     public int getId() {
-        return id_commande;
+        return id;
     }
 
     public void setId(int id) {
-        this.id_commande = id;
+        this.id = id;
     }
 
     @Override
     public String toString() {
-        return "Commande [id=" + id_commande + ", clientId=" + id_client + ", itemCommande=" + itemCommande + "]";
+        return "Commande [id=" + id + ", clientId=" + client.getId() + ", itemCommande=" + itemCommande + "]";
     }
 }
 

@@ -1,12 +1,15 @@
 package org.m2chausson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import org.m2chausson.RabbitMQ.RabbitMQMessage;
+import org.m2chausson.RabbitMQ.RabbitMQMessageHandler;
+
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import java.nio.charset.StandardCharsets;
 
 
 public class App {
@@ -14,6 +17,8 @@ public class App {
     private final static String QUEUE_NAME = "chausson";
 
     public static void main(String[] args) throws IOException, TimeoutException {
+        RabbitMQMessageHandler rabbitMQMessageHandler = new RabbitMQMessageHandler();
+
         // Configurer la connexion à RabbitMQ
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("rabbitmq");
@@ -27,17 +32,25 @@ public class App {
 
         // Déclarer la file d'attente
         channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+        channel.exchangeDeclare("chausson_exchange", "fanout");
         channel.queueBind(QUEUE_NAME, "chausson_exchange", "chausson_routing_key");
         System.out.println(" [*] En attente de messages");
 
         // Définir le callback pour traiter les messages reçus
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-            String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            System.out.println(" [x] Message reçu : '" + message + "'");
-            // Traiter le message ici
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                RabbitMQMessage message = mapper.readValue(delivery.getBody(), RabbitMQMessage.class);
+//                RabbitMQMessage message = (RabbitMQMessage) objectStream.readObject();
+                rabbitMQMessageHandler.HandleMessage(message);
+                System.out.println(" [x] Message reçu : '" + message + "'");
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Erreur de désérialisation des données", e);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         };
 
-        // Commencer à écouter la file d'attente
         channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
 
         // Keep the main thread alive to keep the consumer running

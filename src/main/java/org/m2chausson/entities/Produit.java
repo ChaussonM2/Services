@@ -1,10 +1,11 @@
 package org.m2chausson.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "produit")
-public class Produit {
+public class Produit implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +15,7 @@ public class Produit {
     private String nom;
 
     @Column(name = "prix", nullable = false)
-    private Double prix;
+    private float price;
 
     @Column(name = "type", nullable = false)
     private String type;
@@ -23,7 +24,7 @@ public class Produit {
 
     public Produit(String nom, Double prix, String type) {
         this.nom = nom;
-        this.prix = prix;
+        this.price = price;
         this.type = type;
     }
 
@@ -43,12 +44,12 @@ public class Produit {
         this.nom = nom;
     }
 
-    public Double getPrix() {
-        return prix;
+    public float getPrix() {
+        return price;
     }
 
-    public void setPrix(Double prix) {
-        this.prix = prix;
+    public void setPrix(float price) {
+        this.price = price;
     }
 
     public String getType() {
@@ -61,6 +62,6 @@ public class Produit {
 
     @Override
     public String toString() {
-        return "Produit [id=" + id + ", nom=" + nom + ", prix=" + prix + ", type=" + type + "]";
+        return "Produit [id=" + id + ", nom=" + nom + ", prix=" + price + ", type=" + type + "]";
     }
 }
